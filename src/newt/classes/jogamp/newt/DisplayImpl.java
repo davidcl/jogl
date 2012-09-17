@@ -65,6 +65,7 @@ public abstract class DisplayImpl extends Display {
             DisplayImpl display = (DisplayImpl) displayClass.newInstance();
             name = display.validateDisplayName(name, handle);
             synchronized(displayList) {
+                /**
                 if(reuse) {
                     Display display0 = Display.getLastDisplayOf(type, name, -1);
                     if(null != display0) {
@@ -73,10 +74,9 @@ public abstract class DisplayImpl extends Display {
                         }
                         return display0;
                     }
-                }
+                } */
                 display.name = name;
                 display.type=type;
-                display.destroyWhenUnused=false;
                 display.refCount=0;
                 display.id = serialno++;
                 display.fqname = getFQName(display.type, display.name, display.id);
@@ -497,7 +497,6 @@ public abstract class DisplayImpl extends Display {
     protected String fqname;
     protected int hashCode;
     protected int refCount; // number of Display references by Screen
-    protected boolean destroyWhenUnused;
     protected AbstractGraphicsDevice aDevice;
 }
 

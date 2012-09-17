@@ -103,10 +103,10 @@ public class DisplayDriver extends DisplayImpl {
         // see locking description above
         
         // orig behavior (null lock) causes xcb detecting concurrent access
-        aDevice = new X11GraphicsDevice(handle, AbstractGraphicsDevice.DEFAULT_UNIT, NativeWindowFactory.getNullToolkitLock(), false);
+        // aDevice = new X11GraphicsDevice(handle, AbstractGraphicsDevice.DEFAULT_UNIT, NativeWindowFactory.getNullToolkitLock(), false);
         
         // using recursive lock freezes eg.: com.jogamp.opengl.test.junit.jogl.acore.TestSharedContextListNEWT2
-        // aDevice = new X11GraphicsDevice(handle, AbstractGraphicsDevice.DEFAULT_UNIT, false);
+        aDevice = new X11GraphicsDevice(handle, AbstractGraphicsDevice.DEFAULT_UNIT, false);
     }
 
     protected void closeNativeImpl() {
