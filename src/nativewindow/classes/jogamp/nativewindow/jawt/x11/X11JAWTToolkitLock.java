@@ -28,7 +28,6 @@
 package jogamp.nativewindow.jawt.x11;
 
 import jogamp.nativewindow.jawt.*;
-import jogamp.nativewindow.x11.X11Lib;
 import jogamp.nativewindow.x11.X11Util;
 import javax.media.nativewindow.ToolkitLock;
 
@@ -44,33 +43,23 @@ import com.jogamp.common.util.locks.RecursiveLock;
  * is issued before any other X11 usage. This is the current situation for e.g. Webstart or Applets.
  */
 public class X11JAWTToolkitLock implements ToolkitLock {
-    long displayHandle;
-    RecursiveLock lock;
+    final long displayHandle;
+    final RecursiveLock lock;
 
     public X11JAWTToolkitLock(long displayHandle) {
         this.displayHandle = displayHandle;
-        if(!X11Util.isNativeLockAvailable()) {
-            lock = LockFactory.createRecursiveLock();
-        }
+        lock = LockFactory.createRecursiveLock();
     }
 
     public final void lock() {
-        if(TRACE_LOCK) { System.err.println("X11JAWTToolkitLock.lock() - native: "+(null==lock)); }
+        if(TRACE_LOCK) { System.err.println("X11JAWTToolkitLock.lock()"); }
         JAWTUtil.lockToolkit();
-        if(null == lock) {
-            X11Lib.XLockDisplay(displayHandle);
-        } else {
-            lock.lock();
-        }
+        lock.lock();
     }
 
     public final void unlock() {
-        if(TRACE_LOCK) { System.err.println("X11JAWTToolkitLock.unlock() - native: "+(null==lock)); }
-        if(null == lock) {
-            X11Lib.XUnlockDisplay(displayHandle);
-        } else {
-            lock.unlock();
-        }
+        if(TRACE_LOCK) { System.err.println("X11JAWTToolkitLock.unlock()"); }
+        lock.unlock();
         JAWTUtil.unlockToolkit();
     }
 }

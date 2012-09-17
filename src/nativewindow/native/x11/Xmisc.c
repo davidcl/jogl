@@ -281,27 +281,14 @@ static void x11IOErrorHandlerEnable(int onoff, JNIEnv * env) {
 }
 
 static int _initialized=0;
-static jboolean _xinitThreadsOK=JNI_FALSE;
 
 JNIEXPORT jboolean JNICALL 
-Java_jogamp_nativewindow_x11_X11Util_initialize0(JNIEnv *env, jclass clazz, jboolean firstUIActionOnProcess, jboolean debug) {
+Java_jogamp_nativewindow_x11_X11Util_initialize0(JNIEnv *env, jclass clazz, jboolean debug) {
     if(0==_initialized) {
         if(debug) {
             errorHandlerDebug = 1;
         }
         X11UtilClazz = (jclass)(*env)->NewGlobalRef(env, clazz);
-        if( JNI_TRUE == firstUIActionOnProcess ) {
-            if( 0 == XInitThreads() ) {
-                fprintf(stderr, "Warning: XInitThreads() failed\n");
-            } else {
-                _xinitThreadsOK=JNI_TRUE;
-                if(debug) {
-                    fprintf(stderr, "X11: XInitThreads() called for concurrent Thread support\n");
-                }
-            }
-        } else if(debug) {
-            fprintf(stderr, "X11: XInitThreads() _not_ called for concurrent Thread support\n");
-        }
 
         _initClazzAccess(env);
         x11IOErrorHandlerEnable(1, env);
@@ -310,7 +297,7 @@ Java_jogamp_nativewindow_x11_X11Util_initialize0(JNIEnv *env, jclass clazz, jboo
             fprintf(stderr, "Info: NativeWindow native init passed\n");
         }
     }
-    return _xinitThreadsOK;
+    return JNI_TRUE;
 }
 
 JNIEXPORT void JNICALL 

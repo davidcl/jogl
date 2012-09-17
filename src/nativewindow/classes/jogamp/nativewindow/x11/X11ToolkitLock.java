@@ -40,31 +40,21 @@ import com.jogamp.common.util.locks.RecursiveLock;
  * or a higher level toolkit lock is required, ie AWT lock.
  */
 public class X11ToolkitLock implements ToolkitLock {
-    long displayHandle;
-    RecursiveLock lock;
+    final long displayHandle;
+    final RecursiveLock lock;
 
     public X11ToolkitLock(long displayHandle) {
         this.displayHandle = displayHandle;
-        if(!X11Util.isNativeLockAvailable()) {
-            lock = LockFactory.createRecursiveLock();
-        }
+        lock = LockFactory.createRecursiveLock();
     }
 
     public final void lock() {
-        if(TRACE_LOCK) { System.err.println("X11ToolkitLock.lock() - native: "+(null==lock)); }
-        if(null == lock) {
-            X11Lib.XLockDisplay(displayHandle);
-        } else {
-            lock.lock();
-        }
+        if(TRACE_LOCK) { System.err.println("X11ToolkitLock.lock()"); }
+        lock.lock();
     }
 
     public final void unlock() {
-        if(TRACE_LOCK) { System.err.println("X11ToolkitLock.unlock() - native: "+(null==lock)); }
-        if(null == lock) {
-            X11Lib.XUnlockDisplay(displayHandle);
-        } else {
-            lock.unlock();
-        }
+        if(TRACE_LOCK) { System.err.println("X11ToolkitLock.unlock()"); }
+        lock.unlock();
     }
 }

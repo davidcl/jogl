@@ -59,6 +59,7 @@ function jrun() {
     swton=$1
     shift
 
+    #D_ARGS="-Dsun.awt.disableMixing=true"
     #D_ARGS="-Djogl.disable.opengles"
     #D_ARGS="-Djogl.debug.DebugGL -Djogl.debug.GLSLCode -Dnewt.debug.Window.MouseEvent"
     #D_ARGS="-Djogl.debug.TraceGL -Djogl.debug.DebugGL -Djogl.debug.GLSLCode"
@@ -109,7 +110,7 @@ function jrun() {
     #D_ARGS="-Djogl.debug.GLDrawable -Djogl.debug.GLContext"
     #D_ARGS="-Djogamp.common.utils.locks.Lock.timeout=3000 -Djogamp.debug.Lock -Djogl.debug.GLContext.TraceSwitch"
     #D_ARGS="-Djogamp.common.utils.locks.Lock.timeout=600000 -Djogamp.debug.Lock -Djogamp.debug.Lock.TraceLock"
-    #D_ARGS="-Djogamp.common.utils.locks.Lock.timeout=600000 -Djogamp.debug.Lock -Djogamp.debug.Lock.TraceLock -Dnativewindow.debug.ToolkitLock.TraceLock"
+    D_ARGS="-Djogamp.common.utils.locks.Lock.timeout=600000 -Djogamp.debug.Lock -Djogamp.debug.Lock.TraceLock -Dnativewindow.debug.ToolkitLock.TraceLock"
     #D_ARGS="-Djogamp.common.utils.locks.Lock.timeout=600000 -Djogamp.debug.Lock -Dnativewindow.debug.X11Util"
     #D_ARGS="-Dnewt.debug.EDT -Djogamp.common.utils.locks.Lock.timeout=600000 -Djogl.debug.Animator -Dnewt.debug.Display -Dnewt.debug.Screen"
     #D_ARGS="-Dnewt.debug.Screen"
@@ -246,6 +247,10 @@ function testawtswt() {
 #testnoawt com.jogamp.opengl.test.junit.jogl.acore.TestGLContextDrawableSwitchNEWT $*
 #testnoawt com.jogamp.opengl.test.junit.jogl.acore.TestFBODrawableNEWT $*
 
+# concurrency !
+testnoawt com.jogamp.opengl.test.junit.jogl.acore.TestSharedContextListNEWT2 $*
+#testnoawt com.jogamp.opengl.test.junit.jogl.acore.TestInitConcurrentNEWT $*
+
 #testnoawt com.jogamp.opengl.test.junit.jogl.acore.TestGLAutoDrawableDelegateOnOffscrnCapsNEWT $*
 #testnoawt com.jogamp.opengl.test.junit.jogl.acore.TestGLAutoDrawableGLWindowOnOffscrnCapsNEWT $*
 #testawt com.jogamp.opengl.test.junit.jogl.acore.TestGLAutoDrawableGLCanvasOnOffscrnCapsAWT $*
@@ -273,7 +278,7 @@ function testawtswt() {
 
 #testnoawt com.jogamp.opengl.test.junit.jogl.glu.TestGluUnprojectFloatNOUI $*
 #testnoawt com.jogamp.opengl.test.junit.newt.TestRemoteWindow01NEWT $*
-testnoawt com.jogamp.opengl.test.junit.newt.TestRemoteGLWindows01NEWT $*
+#testnoawt com.jogamp.opengl.test.junit.newt.TestRemoteGLWindows01NEWT $*
 #testnoawt com.jogamp.opengl.test.junit.jogl.demos.gl2.newt.TestGearsNEWT $*
 #testnoawt com.jogamp.opengl.test.junit.jogl.demos.es1.newt.TestGearsES1NEWT $*
 #testawt com.jogamp.opengl.test.junit.jogl.demos.es2.newt.TestGearsES2NEWT $*
@@ -306,6 +311,7 @@ testnoawt com.jogamp.opengl.test.junit.newt.TestRemoteGLWindows01NEWT $*
 #testawt com.jogamp.opengl.test.junit.jogl.awt.TestBug551AWT $*
 #testawt com.jogamp.opengl.test.junit.jogl.awt.TestBug611AWT $*
 #testawt com.jogamp.opengl.test.junit.jogl.awt.TestAWT01GLn $*
+#testawt com.jogamp.opengl.test.junit.jogl.awt.TestJScrollPaneMixHwLw01AWT $*
 #testawt com.jogamp.opengl.test.junit.jogl.acore.TestAWTCloseX11DisplayBug565 $*
 #testawt com.jogamp.opengl.test.junit.jogl.acore.TestSharedContextListAWT $*
 #testawt com.jogamp.opengl.test.junit.jogl.acore.TestSharedContextNewtAWTBug523 $*

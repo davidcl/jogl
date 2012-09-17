@@ -75,15 +75,10 @@ public class DisplayDriver extends DisplayImpl {
      *
      * We use a private non-shared X11 Display instance for EDT window operations and one for exposed animation, eg. OpenGL.
      * <p>
-     * In case {@link X11Util#HAS_XLOCKDISPLAY_BUG} and {@link X11Util#XINITTHREADS_ALWAYS_ENABLED}, 
-     * we use null locking. Even though this seems not to be rational, it gives most stable results on all platforms.
+     * Since access to drawables is synchronized via higher level locks, e.g. surface locks,
+     * we don't use locking on this X11 Display level.
      * </p>
-     * <p>
-     * Otherwise we use basic locking via the constructor {@link X11GraphicsDevice#X11GraphicsDevice(long, int, boolean)},
-     * since it is possible to share this device via {@link com.jogamp.newt.NewtFactory#createDisplay(String, boolean)}.
-     * </p> 
      */
-    @SuppressWarnings("unused")
     protected void createNativeImpl() {
         long handle = X11Util.openDisplay(name);
         if( 0 == handle ) {
@@ -105,12 +100,9 @@ public class DisplayDriver extends DisplayImpl {
             throw e;
         }
         
-        // see API doc above!
-        if(X11Util.XINITTHREADS_ALWAYS_ENABLED && X11Util.HAS_XLOCKDISPLAY_BUG) {
-            aDevice = new X11GraphicsDevice(handle, AbstractGraphicsDevice.DEFAULT_UNIT, NativeWindowFactory.getNullToolkitLock(), false);            
-        } else {
-            aDevice = new X11GraphicsDevice(handle, AbstractGraphicsDevice.DEFAULT_UNIT, false);
-        }
+        // see locking description above
+        // aDevice = new X11GraphicsDevice(handle, AbstractGraphicsDevice.DEFAULT_UNIT, NativeWindowFactory.getNullToolkitLock(), false);            
+        aDevice = new X11GraphicsDevice(handle, AbstractGraphicsDevice.DEFAULT_UNIT, false);
     }
 
     protected void closeNativeImpl() {

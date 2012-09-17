@@ -75,19 +75,11 @@ public class X11Util {
      */
     public static final boolean ATI_HAS_XCLOSEDISPLAY_BUG = !Debug.isPropertyDefined("nativewindow.debug.X11Util.ATI_HAS_NO_XCLOSEDISPLAY_BUG", true);
 
-    /** Value is <code>true</code>, best 'stable' results if always using XInitThreads(). */
-    public static final boolean XINITTHREADS_ALWAYS_ENABLED = true;
-    
-    /** Value is <code>true</code>, best 'stable' results if not using XLockDisplay/XUnlockDisplay at all. */
-    public static final boolean HAS_XLOCKDISPLAY_BUG = true;
-    
     public static final boolean DEBUG = Debug.debug("X11Util");
     public static final boolean XSYNC_ENABLED = Debug.isPropertyDefined("nativewindow.debug.X11Util.XSync", true);
     public static final boolean XERROR_STACKDUMP = DEBUG || Debug.isPropertyDefined("nativewindow.debug.X11Util.XErrorStackDump", true);
     private static final boolean TRACE_DISPLAY_LIFECYCLE = Debug.isPropertyDefined("nativewindow.debug.X11Util.TraceDisplayLifecycle", true);
     private static String nullDisplayName = null;
-    private static boolean isX11LockAvailable = false;
-    private static boolean requiresX11Lock = true;
     private static volatile boolean isInit = false;
     private static boolean markAllDisplaysUnclosable = false; // ATI/AMD X11 driver issues
 
@@ -110,9 +102,7 @@ public class X11Util {
                         throw new NativeWindowException("NativeWindow X11 native library load error.");
                     }
         
-                    final boolean callXInitThreads = XINITTHREADS_ALWAYS_ENABLED ;
-                    final boolean isXInitThreadsOK = initialize0( callXInitThreads, XERROR_STACKDUMP);
-                    isX11LockAvailable = isXInitThreadsOK && !HAS_XLOCKDISPLAY_BUG ;
+                    final boolean isInitOK = initialize0( XERROR_STACKDUMP );
         
                     final long dpy = X11Lib.XOpenDisplay(null);
                     if(0 != dpy) {
@@ -129,9 +119,7 @@ public class X11Util {
                     }
                     
                     if(DEBUG) {
-                        System.err.println("X11Util requiresX11Lock "+requiresX11Lock+
-                                           ", XInitThreads [called "+callXInitThreads+", OK "+isXInitThreadsOK+"]"+
-                                           ", isX11LockAvailable "+isX11LockAvailable+
+                        System.err.println("X11Util init OK "+isInitOK+"]"+
                                            ", X11 Display(NULL) <"+nullDisplayName+">"+
                                            ", XSynchronize Enabled: "+XSYNC_ENABLED);
                         // Thread.dumpStack();
@@ -186,15 +174,11 @@ public class X11Util {
             }
         }
     }
-
-    public static synchronized boolean isNativeLockAvailable() {
-        return isX11LockAvailable;
+    
+    public static boolean requiresToolkitLock() {
+        return true; // JAWT locking: yes - Native X11 locking: nope (uses recursive lock instead)
     }
-
-    public static synchronized boolean requiresToolkitLock() {
-        return requiresX11Lock;
-    }
-
+    
     public static void setX11ErrorHandler(boolean onoff, boolean quiet) {
         synchronized(setX11ErrorHandlerLock) {
             if(onoff) {
@@ -563,7 +547,7 @@ public class X11Util {
     private static final String getCurrentThreadName() { return Thread.currentThread().getName(); } // Callback for JNI
     private static final void dumpStack() { Thread.dumpStack(); } // Callback for JNI
     
-    private static native boolean initialize0(boolean firstUIActionOnProcess, boolean debug);
+    private static native boolean initialize0(boolean debug);
     private static native void shutdown0();
     private static native void setX11ErrorHandler0(boolean onoff, boolean quiet);
 }
